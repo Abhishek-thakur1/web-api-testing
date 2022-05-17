@@ -4,7 +4,8 @@ import {DEFAULT_HEADER} from './util/util.js'
 function handler(req, res) {
 
     const allRoutes = {
-        '/cats:get': (req, res) => {
+        '/cats:get': async (req, res) => {
+            throw new Error('testing! just keep quiet')
             res.write('GET')
             res.end()
         },
@@ -21,7 +22,20 @@ function handler(req, res) {
 
     const key = `${pathname}:${method.toLowerCase()}` 
     const chosen = allRoutes[key] || allRoutes.default
-    return chosen(req, res)
+    return Promise.resolve(chosen(req, res)).catch(errorHandler(res))
 };
+
+// error handler..
+function errorHandler(res) {
+    return err => {
+        console.log('OOPS! Something bad happened🔻', err.stack)
+        res.writeHead(500, DEFAULT_HEADER)
+        res.write(JSON.stringify({
+            err: 'Error happened our side, so you need not to worry🖕'
+        }))
+
+        return res.end()    
+    }
+}
 
 export default handler
