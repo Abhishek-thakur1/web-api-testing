@@ -1,15 +1,15 @@
 import { parse } from 'node:url'
-import {DEFAULT_HEADER} from './util/util.js'
+import { routes } from './routes/catRoute.js';
+import { DEFAULT_HEADER } from './util/util.js'
+
+const catRoute = routes({
+    catService: {}
+})
 
 function handler(req, res) {
 
     const allRoutes = {
-        '/cats:get': async (req, res) => {
-            throw new Error('testing! just keep quiet')
-            res.write('GET')
-            res.end()
-        },
-
+        ...catRoute, 
         // 404
         default: (req, res) => {
             res.writeHead(404, DEFAULT_HEADER);
